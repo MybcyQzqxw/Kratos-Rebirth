@@ -1,6 +1,9 @@
 # NodeJS
 node_modules/
 
+# pnpm 本地构建脚本批准记录（因机器/终端交互而异，不应提交）
+pnpm-workspace.yaml
+
 # IDE相关配置目录
 .vscode/
 .idea/
