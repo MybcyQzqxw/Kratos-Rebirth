@@ -1258,11 +1258,13 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   }
 }
 
+// 首页没有横幅提供顶部留白，封面折叠后卡片会紧贴导航栏，
+// 这里额外补上 #kratos-blog-post 自身的下留白（20px），让首尾留白对称
 body:has(#kr-fullpage-cover) #kratos-blog-post {
-  padding-top: 60px;
+  padding-top: calc(60px + 20px);
 
   @media (width >= 768px) {
-    padding-top: 41px;
+    padding-top: calc(41px + 20px);
   }
 }
 
