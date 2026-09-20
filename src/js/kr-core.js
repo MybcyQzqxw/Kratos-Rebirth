@@ -93,7 +93,8 @@ import "./kr-polyfill";
     isCoverCollapsed = true;
     const overshoot = y - coverHeight;
     cover.classList.add("kr-cover-collapsed");
-    window.scrollTo(0, overshoot);
+    // 必须用 instant，全局 scroll-behavior: smooth 会让补偿滚动变成可见的动画
+    window.scrollTo({ top: overshoot, behavior: "instant" });
   };
 
   window.addEventListener("scroll", checkFullpageCoverCollapse, {
