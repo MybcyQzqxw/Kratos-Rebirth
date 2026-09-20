@@ -31,7 +31,12 @@ import "./kr-polyfill";
     let isScrolledDown = false;
     const pageScrollDownClass = () => {
       window.requestAnimationFrame(() => {
-        if (window.scrollY > 200) {
+        // 首页封面折叠后视为“已离开顶部”，回顶部按钮应保持常驻，
+        // 不能因为折叠后补偿出来的滚动量恰好小于阈值而又被隐藏
+        const cover = getFullpageCover();
+        const pastCover =
+          !!cover && cover.classList.contains("kr-cover-collapsed");
+        if (window.scrollY > 200 || pastCover) {
           if (!isScrolledDown) {
             document.body.classList.add("scroll-down");
             isScrolledDown = true;
