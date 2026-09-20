@@ -2203,8 +2203,9 @@ ul.kratos-page-meta {
       }
 
       &-posts {
-        // 文章数量较少时兜底撑开高度，保证首页主界面能够大致占满一屏
-        min-height: calc(100vh - 480px);
+        // 文章数量较少时兜底撑开高度，保证首页主界面（连同页脚）至少能占满一屏，
+        // 封面才能被完全滚过而彻底消失
+        min-height: 60vh;
 
         .tab-content {
           margin: 0 8px -18px 8px;
