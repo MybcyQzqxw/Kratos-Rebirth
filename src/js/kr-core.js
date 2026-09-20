@@ -53,6 +53,10 @@ import "./kr-polyfill";
       window.scrollTo({ top: 0, behavior: "smooth" });
       return false;
     });
+    // 刷新按钮：与 gotop-box 不同，始终常驻显示，效果等同于刷新当前页面
+    document.getElementById("refresh-box").addEventListener("click", () => {
+      window.location.reload();
+    });
     pageScrollDownClass();
     window.addEventListener("scroll", pageScrollDownClass);
   };
