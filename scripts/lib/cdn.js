@@ -1,6 +1,21 @@
+const fs = require("fs");
 const path = require("path");
 
 const theme = require(path.normalize("../../package.json"));
+
+// 主题自身构建产物（source/ 目录）所在的位置，用于计算缓存清除参数
+const themeSourceDir = path.join(__dirname, "..", "..", "source");
+
+// 用文件最后修改时间做缓存清除参数，保证 `pnpm build` 产出新文件后，
+// 浏览器不会因为文件名没变而继续使用本地缓存里的旧 JS/CSS
+const getThemeFileCacheBuster = (relativePath) => {
+  try {
+    const stat = fs.statSync(path.join(themeSourceDir, relativePath));
+    return stat.mtimeMs.toString(36);
+  } catch (e) {
+    return null;
+  }
+};
 
 const js_helper = (url, options) =>
   `<script ${options?.id ? 'id="' + options?.id + '" ' : ""}${
@@ -80,11 +95,13 @@ const file_info_npm_cdn = (locals, packageName, path) => {
     }
   }
   // 如果没有在上面的步骤中得到资源前缀
+  let isLocalThemeAsset = false;
   if (!cdnPrefix) {
     if (isThemePackage) {
       // 是主题资源，但因为构建的时候 source 目录里的东西会自动被放置到站点根目录下，
       // 所以不用加上 source 目录，直接使用站点根路径作为前缀
       cdnPrefix = locals.config.root;
+      isLocalThemeAsset = true;
     } else {
       // 是第三方资源，需要设置 vendors 前缀，并参照对应的包组织方式
       cdnPrefix = url_join(
@@ -103,7 +120,14 @@ const file_info_npm_cdn = (locals, packageName, path) => {
       ? path
       : packageFileInfo.relocate;
   // 拼接完整资源路径
-  const actualUrl = url_join(cdnPrefix, actualPath);
+  let actualUrl = url_join(cdnPrefix, actualPath);
+  // 本地直出的主题资源追加缓存清除参数，走外部 CDN 时无需（版本号已在路径里）
+  if (isLocalThemeAsset) {
+    const cacheBuster = getThemeFileCacheBuster(actualPath);
+    if (cacheBuster) {
+      actualUrl += `${actualUrl.includes("?") ? "&" : "?"}v=${cacheBuster}`;
+    }
+  }
   const fileInfo = {
     url: actualUrl,
   };
