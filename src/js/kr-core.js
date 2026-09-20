@@ -52,78 +52,77 @@ import "./kr-polyfill";
     window.addEventListener("scroll", pageScrollDownClass);
   };
 
-  // 首页全屏封面：封面是否已被下拉隐藏（隐藏后只有在顶部继续上拉才会重新展开）
-  let isCoverDismissed = false;
+  // 首页全屏封面：与下方内容同处正常文档流，高度占满一屏，
+  // 下拉时随浏览器原生滚动自然过渡到内容区（视觉连贯）；
+  // 上滚回到内容顶部后会被钉住一次，需要再次上拉才会重新回到封面
+  let coverPinnedAtTop = false;
 
-  const isScrollAtTop = () =>
-    (window.scrollY || document.documentElement.scrollTop) <= 0;
+  const getFullpageCover = () => document.getElementById("kr-fullpage-cover");
 
-  const setFullpageCoverVisible = (visible) => {
-    const cover = document.getElementById("kr-fullpage-cover");
-    if (!cover) {
-      return;
-    }
-    isCoverDismissed = !visible;
-    cover.classList.toggle("kr-cover-hidden", !visible);
-    document.body.classList.toggle("kr-cover-active", visible);
-  };
-
-  // 每次进入首页（含 pjax 跳转）都重新展示一次封面
+  // 每次进入首页（含 pjax 跳转）都重置钉住状态，并绑定下滑箭头
   const initFullpageCover = () => {
-    const cover = document.getElementById("kr-fullpage-cover");
+    coverPinnedAtTop = false;
+    const cover = getFullpageCover();
     if (!cover) {
-      // 非首页，确保不残留封面激活状态
-      document.body.classList.remove("kr-cover-active");
       return;
     }
-    setFullpageCoverVisible(true);
     const arrow = cover.querySelector(".kr-fullpage-cover-arrow");
     if (arrow) {
-      arrow.addEventListener("click", () => setFullpageCoverVisible(false));
+      arrow.addEventListener("click", () => {
+        window.scrollTo({ top: cover.offsetHeight, behavior: "smooth" });
+      });
     }
   };
 
-  // 向下滚动隐藏封面；封面隐藏后，只有滚动到顶部再继续向上拉才会重新展开
-  const handleFullpageCoverWheel = (e) => {
-    if (!document.getElementById("kr-fullpage-cover")) {
+  const handleCoverScrollIntent = (deltaY, e) => {
+    const cover = getFullpageCover();
+    if (!cover || !deltaY) {
       return;
     }
-    if (!isCoverDismissed) {
-      if (e.deltaY > 0) {
-        e.preventDefault();
-        setFullpageCoverVisible(false);
+    const coverHeight = cover.offsetHeight;
+    const y = window.scrollY || document.documentElement.scrollTop;
+
+    if (deltaY < 0) {
+      // 向上滚动/上拉
+      if (y > coverHeight) {
+        // 仍在内容区域内部，无需干预
+        return;
       }
-    } else if (isScrollAtTop() && e.deltaY < 0) {
-      setFullpageCoverVisible(true);
+      if (coverPinnedAtTop) {
+        // 已经钉在顶端，这次继续上拉，放行回到封面
+        coverPinnedAtTop = false;
+        return;
+      }
+      // 第一次到达/越过边界，钉住不动，作为“已到达顶端”的信号
+      e.preventDefault();
+      if (y < coverHeight) {
+        window.scrollTo({ top: coverHeight });
+      }
+      coverPinnedAtTop = true;
+    } else if (y >= coverHeight) {
+      // 向下滚动越过封面后，重新解除钉住状态，为下次上拉做准备
+      coverPinnedAtTop = false;
     }
   };
 
-  let coverTouchStartY = 0;
-  const handleFullpageCoverTouchStart = (e) => {
-    coverTouchStartY = e.touches[0].clientY;
+  const handleCoverWheel = (e) => handleCoverScrollIntent(e.deltaY, e);
+
+  let coverTouchLastY = 0;
+  const handleCoverTouchStart = (e) => {
+    coverTouchLastY = e.touches[0].clientY;
   };
-  const handleFullpageCoverTouchMove = (e) => {
-    if (!document.getElementById("kr-fullpage-cover")) {
-      return;
-    }
-    const deltaY = coverTouchStartY - e.touches[0].clientY;
-    if (!isCoverDismissed) {
-      if (deltaY > 10) {
-        e.preventDefault();
-        setFullpageCoverVisible(false);
-      }
-    } else if (isScrollAtTop() && deltaY < -10) {
-      setFullpageCoverVisible(true);
-    }
+  const handleCoverTouchMove = (e) => {
+    const currentY = e.touches[0].clientY;
+    const deltaY = coverTouchLastY - currentY;
+    coverTouchLastY = currentY;
+    handleCoverScrollIntent(deltaY, e);
   };
 
-  window.addEventListener("wheel", handleFullpageCoverWheel, {
-    passive: false,
-  });
-  window.addEventListener("touchstart", handleFullpageCoverTouchStart, {
+  window.addEventListener("wheel", handleCoverWheel, { passive: false });
+  window.addEventListener("touchstart", handleCoverTouchStart, {
     passive: true,
   });
-  window.addEventListener("touchmove", handleFullpageCoverTouchMove, {
+  window.addEventListener("touchmove", handleCoverTouchMove, {
     passive: false,
   });
 

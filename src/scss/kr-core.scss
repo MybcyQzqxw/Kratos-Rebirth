@@ -1317,28 +1317,17 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   }
 }
 
-// 首页全屏封面：进入首页时占满全屏，下拉后收起（并非移除），
-// 只有滚动到顶部后继续向上拉才会重新展开
+// 首页全屏封面：作为首页顶部的正常文档流区块，高度占满一屏，
+// 与下方内容直接相连，下拉时随浏览器原生滚动自然过渡（视觉连贯）；
+// 上滚回到内容顶部后会被钉住一次，需要再次上拉才会重新回到封面
 .kr-fullpage-cover {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
+  position: relative;
   height: 100vh;
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    transform 0.6s ease,
-    opacity 0.6s ease;
-  will-change: transform;
-
-  &.kr-cover-hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-  }
 
   &-content {
     padding: 0 20px;
@@ -1379,10 +1368,6 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   50% {
     transform: translate(-50%, 10px);
   }
-}
-
-body.kr-cover-active {
-  overflow: hidden;
 }
 
 #kratos-blog-post {
