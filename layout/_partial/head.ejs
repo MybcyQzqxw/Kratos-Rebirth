@@ -1,6 +1,15 @@
 <head>
   <!-- 元数据 -->
   <meta charset="utf-8">
+  <% if (is_home()) { %>
+    <script>
+      // 禁止浏览器自动恢复刷新前的滚动位置，保证首页刷新/直接进入时必定从封面顶部开始
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    </script>
+  <% } %>
   <% if (theme.image.favicon) { %>
     <link rel="icon" href="<%- theme.image.favicon %>">
   <% } %>

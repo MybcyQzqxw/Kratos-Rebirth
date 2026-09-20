@@ -60,14 +60,16 @@ import "./kr-polyfill";
 
   const getFullpageCover = () => document.getElementById("kr-fullpage-cover");
 
-  // 每次进入首页（含 pjax 跳转）都重置折叠状态，并绑定下滑箭头
+  // 每次进入首页（含 pjax 跳转）都重置折叠状态、强制回到顶部展示封面，并绑定下滑箭头
   const initFullpageCover = () => {
-    isCoverCollapsed = false;
     const cover = getFullpageCover();
     if (!cover) {
       return;
     }
+    isCoverCollapsed = false;
     cover.classList.remove("kr-cover-collapsed");
+    // 防止浏览器恢复刷新前的滚动位置导致封面被跳过，强制瞬间回到顶部
+    window.scrollTo({ top: 0, behavior: "instant" });
     const arrow = cover.querySelector(".kr-fullpage-cover-arrow");
     if (arrow) {
       arrow.addEventListener("click", () => {
