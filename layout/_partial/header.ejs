@@ -50,16 +50,56 @@
                 </div>
             </header>
         </div>
-        <div class="kratos-start kratos-hero-2">
-            <!-- <div class="kratos-overlay"></div> -->
-            <div class="kratos-cover kratos-cover-2 text-center">
-                <div class="desc desc2 animate-box">
-                    <a href="<%- url_for() %>">
-                        <h2><%= config.title %></h2> <br />
-                        <span><%= config.subtitle %></span>
-                    </a>
+        <%
+            // 计算非首页横幅展示的板块名称（板块横幅内容）
+            let bannerTitle = '';
+            let bannerSubtitle = '';
+            if (is_archive()) {
+                bannerTitle = __('title.archive');
+                if (is_month()) {
+                    bannerTitle += ': ' + page.year + '-' + String(page.month).padStart(2, '0');
+                } else if (is_year()) {
+                    bannerTitle += ': ' + page.year;
+                }
+            } else if (is_category()) {
+                bannerTitle = __('title.category');
+                bannerSubtitle = page.category;
+            } else if (is_tag()) {
+                bannerTitle = __('title.tag');
+                bannerSubtitle = page.tag;
+            } else if (is_post()) {
+                bannerTitle = page.title || __('title.status');
+            } else {
+                bannerTitle = page.title || (page.title_i18n ? __(page.title_i18n) : '') || config.title;
+            }
+        %>
+        <div id="kr-banner-zone">
+            <% if (is_home()) { %>
+                <!-- 首页专属全屏封面，参考 Butterfly 主题风格：进入首页时占满全屏，下拉后收起，需在顶部继续上拉才会重新展开 -->
+                <div id="kr-fullpage-cover" class="kr-fullpage-cover">
+                    <div class="kr-fullpage-cover-content text-center">
+                        <h1><%= config.title %></h1>
+                        <% if (config.subtitle) { %>
+                            <p><%= config.subtitle %></p>
+                        <% } %>
+                    </div>
+                    <div class="kr-fullpage-cover-arrow">
+                        <i class="fa fa-angle-down"></i>
+                    </div>
                 </div>
-            </div>
+            <% } else { %>
+                <div class="kratos-start kratos-hero-2">
+                    <div class="kratos-cover kratos-cover-2 text-center">
+                        <div class="desc desc2 animate-box">
+                            <h2><%- bannerTitle %></h2>
+                            <% if (bannerSubtitle) { %>
+                                <br />
+                                <span><%- bannerSubtitle %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
         </div>
 
         <div id="kratos-blog-post">

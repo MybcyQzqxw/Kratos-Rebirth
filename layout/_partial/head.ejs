@@ -130,10 +130,12 @@
   <!-- 自定义站点横幅和背景 -->
   <style>
     <% if (theme.image.banner) { %>
-      .kratos-cover.kratos-cover-2 {
+      .kratos-cover.kratos-cover-2,
+      #kr-fullpage-cover {
         background-image: url('<%- theme.image.banner.light %>');
       }
-      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2,
+      html[data-theme="dark"] #kr-fullpage-cover {
         background-image: url('<%- theme.image.banner.dark %>');
       }
     <% } %>

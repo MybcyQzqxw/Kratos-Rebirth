@@ -52,6 +52,81 @@ import "./kr-polyfill";
     window.addEventListener("scroll", pageScrollDownClass);
   };
 
+  // 首页全屏封面：封面是否已被下拉隐藏（隐藏后只有在顶部继续上拉才会重新展开）
+  let isCoverDismissed = false;
+
+  const isScrollAtTop = () =>
+    (window.scrollY || document.documentElement.scrollTop) <= 0;
+
+  const setFullpageCoverVisible = (visible) => {
+    const cover = document.getElementById("kr-fullpage-cover");
+    if (!cover) {
+      return;
+    }
+    isCoverDismissed = !visible;
+    cover.classList.toggle("kr-cover-hidden", !visible);
+    document.body.classList.toggle("kr-cover-active", visible);
+  };
+
+  // 每次进入首页（含 pjax 跳转）都重新展示一次封面
+  const initFullpageCover = () => {
+    const cover = document.getElementById("kr-fullpage-cover");
+    if (!cover) {
+      // 非首页，确保不残留封面激活状态
+      document.body.classList.remove("kr-cover-active");
+      return;
+    }
+    setFullpageCoverVisible(true);
+    const arrow = cover.querySelector(".kr-fullpage-cover-arrow");
+    if (arrow) {
+      arrow.addEventListener("click", () => setFullpageCoverVisible(false));
+    }
+  };
+
+  // 向下滚动隐藏封面；封面隐藏后，只有滚动到顶部再继续向上拉才会重新展开
+  const handleFullpageCoverWheel = (e) => {
+    if (!document.getElementById("kr-fullpage-cover")) {
+      return;
+    }
+    if (!isCoverDismissed) {
+      if (e.deltaY > 0) {
+        e.preventDefault();
+        setFullpageCoverVisible(false);
+      }
+    } else if (isScrollAtTop() && e.deltaY < 0) {
+      setFullpageCoverVisible(true);
+    }
+  };
+
+  let coverTouchStartY = 0;
+  const handleFullpageCoverTouchStart = (e) => {
+    coverTouchStartY = e.touches[0].clientY;
+  };
+  const handleFullpageCoverTouchMove = (e) => {
+    if (!document.getElementById("kr-fullpage-cover")) {
+      return;
+    }
+    const deltaY = coverTouchStartY - e.touches[0].clientY;
+    if (!isCoverDismissed) {
+      if (deltaY > 10) {
+        e.preventDefault();
+        setFullpageCoverVisible(false);
+      }
+    } else if (isScrollAtTop() && deltaY < -10) {
+      setFullpageCoverVisible(true);
+    }
+  };
+
+  window.addEventListener("wheel", handleFullpageCoverWheel, {
+    passive: false,
+  });
+  window.addEventListener("touchstart", handleFullpageCoverTouchStart, {
+    passive: true,
+  });
+  window.addEventListener("touchmove", handleFullpageCoverTouchMove, {
+    passive: false,
+  });
+
   // 构建移动端的侧边展开导航
   const initOffcanvas = () => {
     const menuWrapClone = document
@@ -659,6 +734,7 @@ import "./kr-polyfill";
 
   const initPerPage = () => {
     const items = [
+      initFullpageCover,
       initTocWidgetAnim,
       initCodeCopy,
       initCollapseBoxControl,

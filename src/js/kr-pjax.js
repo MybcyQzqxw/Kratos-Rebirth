@@ -86,6 +86,21 @@
       document.getElementById("main").innerHTML = data.content;
     }
 
+    // 更新横幅/首页封面区域（板块横幅内容或首页封面各不相同，不在 #main 内，需单独替换）
+    const oldBannerZone = document.getElementById("kr-banner-zone");
+    if (oldBannerZone) {
+      if (dom) {
+        const newBannerZone = dom.getElementById("kr-banner-zone");
+        if (newBannerZone && typeof oldBannerZone.replaceWith === "function") {
+          oldBannerZone.replaceWith(newBannerZone);
+        } else if (typeof data.bannerContent === "string") {
+          oldBannerZone.innerHTML = data.bannerContent;
+        }
+      } else if (typeof data.bannerContent === "string") {
+        oldBannerZone.innerHTML = data.bannerContent;
+      }
+    }
+
     // 手动执行 JavaScript 脚本
     const scripts = document
       .getElementById("main")
@@ -123,6 +138,7 @@
     metaAuthor: getMetaProperty(dom, "author", "name"),
     metaDescription: getMetaProperty(dom, "description", "name"),
     content: dom.getElementById("main").innerHTML,
+    bannerContent: dom.getElementById("kr-banner-zone")?.innerHTML ?? "",
   });
 
   /**
