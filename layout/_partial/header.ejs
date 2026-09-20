@@ -75,7 +75,7 @@
         %>
         <div id="kr-banner-zone">
             <% if (is_home()) { %>
-                <!-- 首页专属全屏封面，参考 Butterfly 主题风格：进入首页时占满全屏，下拉后收起，需在顶部继续上拉才会重新展开 -->
+                <!-- 首页专属全屏封面：初次进入占满全屏，下拉后与主界面自然衔接；一旦完全滚入主界面即永久折叠，之后上拉也不会再出现 -->
                 <div id="kr-fullpage-cover" class="kr-fullpage-cover">
                     <div class="kr-fullpage-cover-content text-center">
                         <h1><%= config.title %></h1>

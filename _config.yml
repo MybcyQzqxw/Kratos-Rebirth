@@ -44,10 +44,10 @@ search:
 # 图片配置
 image:
   favicon: "" # 站点图标
-  avatar: "/images/user.svg" # 个人信息挂件上的头像
-  banner: # 站点横幅
-    light: "" # 亮色模式
-    dark: "" # 暗色模式
+  avatar: "/images/user.svg" # 个人信息挂像上的头像
+  banner: # 站点横幅（首页全屏封面 + 其他页面的板块横幅共用）
+    light: "" # 亮色模式，可填图片路径/URL，也可填纯色（如 #1a1a2e）或渐变色（如 linear-gradient(135deg, #1a1a2e, #16213e)）等任意合法 CSS background 值
+    dark: "" # 暗色模式，写法同上
   background: # 站点背景
     light: "" # 亮色模式
     dark: "" # 暗色模式

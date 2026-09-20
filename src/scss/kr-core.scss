@@ -1318,8 +1318,9 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
 }
 
 // 首页全屏封面：作为首页顶部的正常文档流区块，高度占满一屏，
-// 与下方内容直接相连，下拉时随浏览器原生滚动自然过渡（视觉连贯）；
-// 上滚回到内容顶部后会被钉住一次，需要再次上拉才会重新回到封面
+// 与下方主界面直接相连，下拉时随浏览器原生滚动自然过渡（视觉连贯）；
+// 一旦完全滚过封面进入主界面，就会被永久折叠（kr-cover-collapsed），
+// 之后无论怎样上拉都不会再出现，如同首页从未有过封面一样
 .kr-fullpage-cover {
   position: relative;
   height: 100vh;
@@ -1328,6 +1329,11 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  &.kr-cover-collapsed {
+    height: 0;
+  }
 
   &-content {
     padding: 0 20px;

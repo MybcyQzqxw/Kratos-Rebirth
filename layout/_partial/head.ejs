@@ -128,15 +128,30 @@
     <%- js_npm_cdn('qr-code-styling', 'lib/qr-code-styling.js') %>
   <% } %>
   <!-- 自定义站点横幅和背景 -->
+  <%
+    // 横幅背景支持两种写法：图片路径/URL，或是任意合法的 CSS background 值
+    // （纯色、渐变色等），方便站长像改站点标题一样随时在配置文件里调整
+    const isBannerImage = (val) =>
+      !!val &&
+      (/^(https?:)?\/\//.test(val) ||
+        val.startsWith('/') ||
+        /\.(png|jpe?g|gif|webp|svg|avif)(\?.*)?$/i.test(val));
+    const bannerCssDeclaration = (val) =>
+      isBannerImage(val) ? `background-image: url('${val}');` : `background: ${val};`;
+    const bannerLight = theme.image.banner && theme.image.banner.light;
+    const bannerDark = theme.image.banner && theme.image.banner.dark;
+  %>
   <style>
-    <% if (theme.image.banner) { %>
+    <% if (bannerLight) { %>
       .kratos-cover.kratos-cover-2,
       #kr-fullpage-cover {
-        background-image: url('<%- theme.image.banner.light %>');
+        <%- bannerCssDeclaration(bannerLight) %>
       }
+    <% } %>
+    <% if (bannerDark) { %>
       html[data-theme="dark"] .kratos-cover.kratos-cover-2,
       html[data-theme="dark"] #kr-fullpage-cover {
-        background-image: url('<%- theme.image.banner.dark %>');
+        <%- bannerCssDeclaration(bannerDark) %>
       }
     <% } %>
     <% if (theme.image.background) { %>

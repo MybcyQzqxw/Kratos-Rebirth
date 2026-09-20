@@ -52,20 +52,22 @@ import "./kr-polyfill";
     window.addEventListener("scroll", pageScrollDownClass);
   };
 
-  // 首页全屏封面：与下方内容同处正常文档流，高度占满一屏，
-  // 下拉时随浏览器原生滚动自然过渡到内容区（视觉连贯）；
-  // 上滚回到内容顶部后会被钉住一次，需要再次上拉才会重新回到封面
-  let coverPinnedAtTop = false;
+  // 首页全屏封面：与下方主界面同处正常文档流（占位在其上方），
+  // 下拉时随浏览器原生滚动自然过渡到主界面（视觉连贯）；
+  // 一旦用户滚动越过封面完全进入主界面，就永久折叠封面所占的空间，
+  // 之后无论怎样上拉都不会再看到封面，如同首页从未有过封面一样
+  let isCoverCollapsed = false;
 
   const getFullpageCover = () => document.getElementById("kr-fullpage-cover");
 
-  // 每次进入首页（含 pjax 跳转）都重置钉住状态，并绑定下滑箭头
+  // 每次进入首页（含 pjax 跳转）都重置折叠状态，并绑定下滑箭头
   const initFullpageCover = () => {
-    coverPinnedAtTop = false;
+    isCoverCollapsed = false;
     const cover = getFullpageCover();
     if (!cover) {
       return;
     }
+    cover.classList.remove("kr-cover-collapsed");
     const arrow = cover.querySelector(".kr-fullpage-cover-arrow");
     if (arrow) {
       arrow.addEventListener("click", () => {
@@ -74,56 +76,28 @@ import "./kr-polyfill";
     }
   };
 
-  const handleCoverScrollIntent = (deltaY, e) => {
+  const checkFullpageCoverCollapse = () => {
+    if (isCoverCollapsed) {
+      return;
+    }
     const cover = getFullpageCover();
-    if (!cover || !deltaY) {
+    if (!cover) {
       return;
     }
     const coverHeight = cover.offsetHeight;
     const y = window.scrollY || document.documentElement.scrollTop;
-
-    if (deltaY < 0) {
-      // 向上滚动/上拉
-      if (y > coverHeight) {
-        // 仍在内容区域内部，无需干预
-        return;
-      }
-      if (coverPinnedAtTop) {
-        // 已经钉在顶端，这次继续上拉，放行回到封面
-        coverPinnedAtTop = false;
-        return;
-      }
-      // 第一次到达/越过边界，钉住不动，作为“已到达顶端”的信号
-      e.preventDefault();
-      if (y < coverHeight) {
-        window.scrollTo({ top: coverHeight });
-      }
-      coverPinnedAtTop = true;
-    } else if (y >= coverHeight) {
-      // 向下滚动越过封面后，重新解除钉住状态，为下次上拉做准备
-      coverPinnedAtTop = false;
+    if (y < coverHeight) {
+      return; // 尚未完全滚过封面，保持原样，让下拉过程保持连贯
     }
+    // 已完全进入主界面：折叠封面占位并原地补偿滚动位置，避免画面跳动
+    isCoverCollapsed = true;
+    const overshoot = y - coverHeight;
+    cover.classList.add("kr-cover-collapsed");
+    window.scrollTo(0, overshoot);
   };
 
-  const handleCoverWheel = (e) => handleCoverScrollIntent(e.deltaY, e);
-
-  let coverTouchLastY = 0;
-  const handleCoverTouchStart = (e) => {
-    coverTouchLastY = e.touches[0].clientY;
-  };
-  const handleCoverTouchMove = (e) => {
-    const currentY = e.touches[0].clientY;
-    const deltaY = coverTouchLastY - currentY;
-    coverTouchLastY = currentY;
-    handleCoverScrollIntent(deltaY, e);
-  };
-
-  window.addEventListener("wheel", handleCoverWheel, { passive: false });
-  window.addEventListener("touchstart", handleCoverTouchStart, {
+  window.addEventListener("scroll", checkFullpageCoverCollapse, {
     passive: true,
-  });
-  window.addEventListener("touchmove", handleCoverTouchMove, {
-    passive: false,
   });
 
   // 构建移动端的侧边展开导航
