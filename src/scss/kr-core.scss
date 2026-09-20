@@ -1248,6 +1248,24 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   top: -41px;
 }
 
+// 顶部导航栏是 position: fixed，不占据文档流高度，
+// 这里给每个页面顶端留出等高的间距，避免被导航栏遮挡（首页全屏封面本身保持贴顶占满整屏，不受影响）
+#kr-banner-zone:not(:has(#kr-fullpage-cover)) {
+  padding-top: 60px; // 与移动端导航栏高度一致
+
+  @media (width >= 768px) {
+    padding-top: 41px; // 与桌面端导航栏高度一致
+  }
+}
+
+body:has(#kr-fullpage-cover) #kratos-blog-post {
+  padding-top: 60px;
+
+  @media (width >= 768px) {
+    padding-top: 41px;
+  }
+}
+
 .kratos {
   &-cover,
   &-start {
