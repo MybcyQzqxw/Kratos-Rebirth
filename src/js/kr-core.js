@@ -682,6 +682,57 @@ import "./kr-polyfill";
     }
   };
 
+  // 智能目录：正文中的目录（.kratos-post-inner-toc）滚出视口上方后，
+  // 才显示侧边栏的智能目录挂件，避免二者同时出现造成冗余
+  const initSmartTocToggle = () => {
+    const smartToc = document.querySelector("#krw-toc.smart-toc");
+    const innerToc = document.querySelector(".kratos-post-inner-toc");
+    if (!smartToc || !innerToc) {
+      return;
+    }
+
+    const showSmartToc = () => smartToc.classList.remove("smart-toc-hidden");
+    const hideSmartToc = () => smartToc.classList.add("smart-toc-hidden");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            hideSmartToc();
+          } else if (entry.boundingClientRect.top < 0) {
+            // 正文目录已滚动到视口上方，用户正常往下阅读，超出了目录范围
+            showSmartToc();
+          } else {
+            // 正文目录还在视口下方，尚未阅读到
+            hideSmartToc();
+          }
+        },
+        { threshold: 0 },
+      );
+      observer.observe(innerToc);
+      window.addEventListener("pjax:before", () => observer.disconnect(), {
+        once: true,
+      });
+    } else {
+      const onScroll = makeDelay(() => {
+        window.requestAnimationFrame(() => {
+          if (innerToc.getBoundingClientRect().bottom < 0) {
+            showSmartToc();
+          } else {
+            hideSmartToc();
+          }
+        });
+      }, 100);
+      onScroll();
+      window.addEventListener("scroll", onScroll);
+      window.addEventListener(
+        "pjax:before",
+        () => window.removeEventListener("scroll", onScroll),
+        { once: true },
+      );
+    }
+  };
+
   const initTopNavScrollToggle = (kr) => {
     // 判断设置参数
     if (!kr.enable) {
@@ -721,6 +772,7 @@ import "./kr-polyfill";
     const items = [
       initFullpageCover,
       initTocWidgetAnim,
+      initSmartTocToggle,
       initCodeCopy,
       initCollapseBoxControl,
       commentsLazyLoad,
