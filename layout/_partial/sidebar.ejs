@@ -17,6 +17,12 @@
                     <div class="sticky-area">
                 <% }
             break;
+            case 'posts':
+                // 文章页不显示"最新文章"，为智能目录腾出空间
+                if (!is_post()) { %>
+                    <%- partial('_widget/posts') %>
+                <% }
+            break;
             default: %>
                 <%- partial('_widget/' + widget) %>
             <% break;
