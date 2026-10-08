@@ -298,6 +298,13 @@ h6 {
 }
 
 .kratos-page-content {
+  // 过长的行间公式在正文栏内横向滚动，避免溢出到侧边栏
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.2em 0;
+  }
+
   &.kr-post,
   &.kr-page {
     h1 {
