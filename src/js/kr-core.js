@@ -102,8 +102,9 @@ import "./kr-polyfill";
     }
     // 已完全进入主界面：折叠封面占位并原地补偿滚动位置，避免画面跳动
     isCoverCollapsed = true;
-    const overshoot = y - coverHeight;
     cover.classList.add("kr-cover-collapsed");
+    // 折叠后封面仍保留导航栏高度的占位，补偿量需扣除这部分
+    const overshoot = y - (coverHeight - cover.offsetHeight);
     // 必须用 instant，全局 scroll-behavior: smooth 会让补偿滚动变成可见的动画
     window.scrollTo({ top: overshoot, behavior: "instant" });
   };

@@ -1258,15 +1258,8 @@ body.scroll-down.nav-up #kratos-desktop-topnav {
   }
 }
 
-// 首页没有横幅提供顶部留白，封面折叠后卡片会紧贴导航栏，
-// 这里额外补上 #kratos-blog-post 自身的下留白（20px），让首尾留白对称
-body:has(#kr-fullpage-cover) #kratos-blog-post {
-  padding-top: calc(60px + 20px);
-
-  @media (width >= 768px) {
-    padding-top: calc(41px + 20px);
-  }
-}
+// 首页封面折叠后留出的导航栏间距由封面自身承担（见 .kr-cover-collapsed）。
+// 不能用 body:has(#kr-fullpage-cover) 这类祖先选择器：pjax 替换横幅后部分浏览器不会重算样式，导致间距残留
 
 .kratos {
   &-cover,
@@ -1352,7 +1345,16 @@ body:has(#kr-fullpage-cover) #kratos-blog-post {
   overflow: hidden;
 
   &.kr-cover-collapsed {
-    height: 0;
+    height: 60px; // 与移动端导航栏高度一致
+    background: none !important;
+
+    > * {
+      display: none;
+    }
+
+    @media (width >= 768px) {
+      height: 41px; // 与桌面端导航栏高度一致
+    }
   }
 
   &-content {
@@ -2775,11 +2777,6 @@ body.scroll-down .kr-tool {
 
   #kratos-blog-post {
     padding: 2em 0 1em;
-  }
-
-  // 首页的导航栏留白由此处承担，需与上面的移动端内边距保持一致，使各页面顶部间距相同
-  body:has(#kr-fullpage-cover) #kratos-blog-post {
-    padding-top: calc(60px + 2em);
   }
 
   .kratos-page-meta span {
