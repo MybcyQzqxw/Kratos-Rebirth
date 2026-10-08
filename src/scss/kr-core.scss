@@ -2777,6 +2777,11 @@ body.scroll-down .kr-tool {
     padding: 2em 0 1em;
   }
 
+  // 首页的导航栏留白由此处承担，需与上面的移动端内边距保持一致，使各页面顶部间距相同
+  body:has(#kr-fullpage-cover) #kratos-blog-post {
+    padding-top: calc(60px + 2em);
+  }
+
   .kratos-page-meta span {
     font-size: 9pt;
 
