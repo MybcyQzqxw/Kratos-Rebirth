@@ -158,6 +158,15 @@ ul.kratos-page-meta {
         }
       }
 
+      &-links .link-button {
+        background-color: $tag_background;
+
+        &:hover {
+          color: $tag_background;
+          background-color: $text_alt;
+        }
+      }
+
       &-categories .category-list-item {
         &::before {
           color: $text_alt;

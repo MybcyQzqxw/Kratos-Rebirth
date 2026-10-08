@@ -1,0 +1,13 @@
+<% const sidebarLinks = theme.sidebar.links || []; %>
+<% if (sidebarLinks.length) { %>
+  <aside id="krw-links" class="widget widget-kratos-links clearfix">
+    <h4 class="widget-title"><i class="fa fa-link"></i><%- __('title.links') %></h4>
+    <div class="link-buttons">
+      <% for (const item of sidebarLinks) { %>
+        <a class="link-button" href="<%- item.link %>" title="<%= item.name || '' %>" aria-label="<%= item.name || '' %>" target="_blank" rel="noopener noreferrer">
+          <%- icon_to_html(item.icon) %>
+        </a>
+      <% } %>
+    </div>
+  </aside>
+<% } %>
