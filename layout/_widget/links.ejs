@@ -4,9 +4,22 @@
     <h4 class="widget-title"><i class="fa fa-link"></i><%- __('title.links') %></h4>
     <div class="link-buttons">
       <% for (const item of sidebarLinks) { %>
-        <a class="link-button" href="<%- item.link %>" title="<%= item.name || '' %>" aria-label="<%= item.name || '' %>" target="_blank" rel="noopener noreferrer">
-          <%- icon_to_html(item.icon) %>
-        </a>
+        <% if (item.qrcode) { %>
+          <div class="link-item has-qrcode">
+            <a class="link-button" role="button" tabindex="0" aria-label="<%= item.name || '' %>" aria-haspopup="true" aria-expanded="false">
+              <%- icon_to_html(item.icon) %>
+            </a>
+            <div class="link-qrcode" role="tooltip">
+              <img src="<%- item.qrcode %>" alt="<%= item.name || '' %>" loading="lazy">
+            </div>
+          </div>
+        <% } else { %>
+          <div class="link-item">
+            <a class="link-button" href="<%- item.link %>" title="<%= item.name || '' %>" aria-label="<%= item.name || '' %>" target="_blank" rel="noopener noreferrer">
+              <%- icon_to_html(item.icon) %>
+            </a>
+          </div>
+        <% } %>
       <% } %>
     </div>
   </aside>

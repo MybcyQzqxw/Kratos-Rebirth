@@ -768,6 +768,45 @@ import "./kr-polyfill";
     window.addEventListener("wheel", handleTopNavScrollToggle);
   };
 
+  const initLinkQrcode = () => {
+    const closeAll = (except) => {
+      document
+        .querySelectorAll(".link-item.has-qrcode.active")
+        .forEach((el) => {
+          if (el !== except) {
+            el.classList.remove("active");
+            el.querySelector(".link-button")?.setAttribute(
+              "aria-expanded",
+              "false",
+            );
+          }
+        });
+    };
+
+    // 事件委托：pjax 替换页面内容后无需重新绑定
+    document.addEventListener("click", (e) => {
+      const item = e.target.closest?.(".link-item.has-qrcode");
+      closeAll(item);
+      if (!item || e.target.closest(".link-qrcode")) return;
+      const active = item.classList.toggle("active");
+      item
+        .querySelector(".link-button")
+        ?.setAttribute("aria-expanded", String(active));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeAll();
+      } else if (
+        (e.key === "Enter" || e.key === " ") &&
+        e.target.matches?.(".link-item.has-qrcode .link-button")
+      ) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+  };
+
   const initPerPage = () => {
     const items = [
       initFullpageCover,
@@ -844,7 +883,12 @@ import "./kr-polyfill";
         console.error(`Load config failed: ${e}`);
       });
 
-    const items = [initPageScrollDown, initOffcanvas, initPerPage];
+    const items = [
+      initPageScrollDown,
+      initOffcanvas,
+      initLinkQrcode,
+      initPerPage,
+    ];
 
     // Execute each item with try block to prevent errors from breaking the entire loop
     for (const item of items) {

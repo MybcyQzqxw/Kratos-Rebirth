@@ -2229,6 +2229,67 @@ ul.kratos-page-meta {
           gap: 10px;
         }
 
+        .link-item {
+          position: relative;
+
+          &.has-qrcode .link-button {
+            cursor: pointer;
+          }
+        }
+
+        // 二维码气泡：二维码需白底才便于扫描，两种主题下统一用白色
+        .link-qrcode {
+          position: absolute;
+          bottom: calc(100% + 12px);
+          left: 50%;
+          z-index: 30;
+          padding: 8px;
+          border-radius: 8px;
+          background: #fff;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+          opacity: 0;
+          visibility: hidden;
+          transform: translate(-50%, 6px);
+          transition:
+            opacity 0.2s ease,
+            transform 0.2s ease,
+            visibility 0.2s;
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -7px;
+            border: 7px solid transparent;
+            border-top-color: #fff;
+          }
+
+          img {
+            display: block;
+            width: 160px;
+            height: 160px;
+            max-width: none;
+            object-fit: contain;
+          }
+        }
+
+        .link-item.has-qrcode.active .link-qrcode,
+        .link-item.has-qrcode:focus-within .link-qrcode {
+          opacity: 1;
+          visibility: visible;
+          transform: translate(-50%, 0);
+        }
+
+        // 仅在支持悬停的设备上启用悬停显示，触屏设备靠点击切换
+        @media (hover: hover) {
+          .link-item.has-qrcode:hover .link-qrcode {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+          }
+        }
+
         .link-button {
           display: flex;
           align-items: center;
