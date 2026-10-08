@@ -261,6 +261,7 @@
     // 尝试请求数据
     try {
       const responseText = await fetch(reqUrl, {
+        cache: "no-cache",
         signal: abc.signal,
       }).then((res) => res.text());
 
