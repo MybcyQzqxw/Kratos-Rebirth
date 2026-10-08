@@ -87,7 +87,8 @@
                         <i class="fa fa-angle-down"></i>
                     </div>
                 </div>
-            <% } else { %>
+            <% } else if (!is_post() && !is_archive()) { %>
+                <!-- 文章页和归档页不显示横幅，仅由 #kr-banner-zone 的 padding 为固定导航栏留白 -->
                 <div class="kratos-start kratos-hero-2">
                     <div class="kratos-cover kratos-cover-2 text-center">
                         <div class="desc desc2 animate-box">
