@@ -18,6 +18,48 @@
         .catch(function () {});
     })();
   </script>
+  <script>
+    // 临时诊断：控制台执行 localStorage.krDebug=1 后，页面左下角会显示加载过程各时间点的布局数据；执行 localStorage.removeItem('krDebug') 关闭
+    (function () {
+      try { if (!localStorage.getItem("krDebug")) return; } catch (e) { return; }
+      var logs = [], t0 = performance.now();
+      var snap = function (tag) {
+        var $ = function (id) { return document.getElementById(id); };
+        var bp = $("kratos-blog-post"), bz = $("kr-banner-zone"), nav = $("kratos-desktop-topnav");
+        var a = document.querySelector("#main article");
+        var cs = function (el, p) { return el ? getComputedStyle(el)[p] : "-"; };
+        logs.push(
+          Math.round(performance.now() - t0) + "ms " + tag +
+          " | sY=" + Math.round(scrollY) + " w=" + innerWidth + " dpr=" + devicePixelRatio +
+          " | blog=" + (bp ? Math.round(bp.getBoundingClientRect().top + scrollY) : "-") + " pad=" + cs(bp, "paddingTop") +
+          " | zone=" + (bz ? bz.offsetHeight : "-") + " pad=" + cs(bz, "paddingTop") +
+          " | nav=" + cs(nav, "position") + "/" + (nav ? nav.offsetHeight : "-") +
+          " | art=" + (a ? Math.round(a.getBoundingClientRect().top + scrollY) : "-") +
+          " | cls=" + (document.body ? document.body.className : "-") +
+          " | rs=" + document.readyState
+        );
+        render();
+      };
+      var box;
+      var render = function () {
+        if (!document.body) return;
+        if (!box) {
+          box = document.createElement("pre");
+          box.style.cssText = "position:fixed;left:0;bottom:0;z-index:99999;max-width:100%;margin:0;padding:6px;background:rgba(0,0,0,.85);color:#0f0;font:11px/1.4 monospace;white-space:pre-wrap;overflow:auto;max-height:50vh";
+          box.onclick = function () { box.remove(); };
+          document.body.appendChild(box);
+        }
+        var nt = performance.getEntriesByType("navigation")[0] || {};
+        var css = [].map.call(document.styleSheets, function (s) { return (s.href || "inline").split("/").pop().split("?")[0] + (s.media && s.media.mediaText ? "[" + s.media.mediaText + "]" : ""); }).join(",");
+        box.textContent = "nav=" + nt.type + " transfer=" + nt.transferSize + " hist=" + history.length + " state=" + !!history.state + " rest=" + history.scrollRestoration + "\ncss=" + css + "\n" + logs.join("\n");
+      };
+      document.addEventListener("DOMContentLoaded", function () { snap("DCL"); });
+      window.addEventListener("load", function () { snap("load"); setTimeout(function () { snap("+1s"); }, 1000); setTimeout(function () { snap("+3s"); }, 3000); });
+      var n = 0;
+      window.addEventListener("scroll", function () { if (n++ < 6) snap("scroll"); });
+      window.addEventListener("resize", function () { snap("resize"); });
+    })();
+  </script>
   <% if (is_home()) { %>
     <script>
       // 禁止浏览器自动恢复刷新前的滚动位置，保证首页刷新/直接进入时必定从封面顶部开始
