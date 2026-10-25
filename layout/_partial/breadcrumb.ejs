@@ -12,6 +12,14 @@
             <a href="<%- url_for(page.path) %>">
                 <%= page.tag %>
             </a>
+        <% } else if (page.collection) { %>
+            <a href="<%- url_for('/collections/') %>">
+                <%= __('title.collection') %>
+            </a>
+            <i class="fa fa-angle-right"></i>
+            <a href="<%- url_for(page.path) %>">
+                <%= page.collection %>
+            </a>
         <% } else if (page.category) { %>
 
             <a href="<%- url_for('/categories/') %>">

@@ -31,20 +31,32 @@
           <div class="kratos-page-content kr-archive">
             <div id="archives">
               <div class="post-block archive post" style="margin-left: 2em;">
+                <%- section_filter() %>
                 <h3 class="archive-page-counter"><%- __('list_page_count_message.archive', site.posts.filter(post => !!post.title).length) %></h3>
                 <div class="posts-collapse">
-                  <% let year; %>
-                  <% page.posts.sort('date', -1).each((post) => { %>
-                    <% let post_year = date(post.date, 'YYYY'); %>
-                    <% if (post_year !== year && post.title) { %>
-                      <!-- 没遇到Title的会被自动忽略年份，即使并不一致 -->
-                      <% year = post_year; %>
+                  <%
+                    // 按年份分组，便于板块筛选时整组隐藏（没遇到 Title 的会被自动忽略）
+                    const yearGroups = [];
+                    page.posts.sort('date', -1).each((post) => {
+                      if (!post.title) return;
+                      const postYear = date(post.date, 'YYYY');
+                      let group = yearGroups[yearGroups.length - 1];
+                      if (!group || group.year !== postYear) {
+                        group = { year: postYear, posts: [], sections: new Set() };
+                        yearGroups.push(group);
+                      }
+                      group.posts.push(post);
+                      if (section_name(post)) group.sections.add(section_name(post));
+                    });
+                  %>
+                  <% yearGroups.forEach((group) => { %>
+                    <% const year = group.year; %>
+                    <div class="arch-year" data-secs="<%= [...group.sections].join(' ') %>">
                       <div class="collection-title">
                         <a href="<%- url_for(config.root + config.archive_dir + '/' + year + '/') %>"><h2 class="archive-year"><%- year %></h2></a>
                       </div>
-                    <% } %>
-                    <% if (post.title) { %>
-                      <article class="post" itemscope itemtype="https://schema.org/Article">
+                    <% group.posts.forEach((post) => { %>
+                      <article class="post" itemscope itemtype="https://schema.org/Article" data-section="<%= section_name(post) %>">
                         <header class="post-header">
                           <h3 class="post-title">
                             <% if (post.link) { %>
@@ -57,6 +69,7 @@
                                   <span itemprop="name headline"><%- post.title %></span>
                                 </a>
                             <% } %>
+                            <%- section_badge(post) %>
                           </h3>
                           <div class="post-meta">
                             <time class="post-time" itemprop="datePublished"
@@ -66,7 +79,8 @@
                           </div>
                         </header>
                       </article>
-                    <% } %>
+                    <% }) %>
+                    </div>
                   <% }) %>
                 </div>
               </div>

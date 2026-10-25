@@ -1,0 +1,82 @@
+<style>
+  .collections ul {
+    list-style: none;
+  }
+
+  .collections .collection-list-item {
+    position: relative;
+    padding-top: 20px;
+  }
+
+  .collections .collection-list-item .collection-list-link::before {
+    content: " ";
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    margin-left: -4px;
+    margin-top: -4px;
+    width: 8px;
+    height: 8px;
+    background: #bbb;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .collections .collection-list-item .collection-list-link:hover::before {
+    background: #222;
+  }
+
+  .collections .collection-list-item .collection-list-link {
+    position: relative;
+    margin-left: 24px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: inherit;
+  }
+
+  .collections .collection-list-item .collection-list-link::after {
+    opacity: 0;
+    font-family: fontawesome;
+    content: "\f138";
+    margin-left: 12px;
+    color: #00a7e0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .collections .collection-list-item .collection-list-link:hover::after {
+    opacity: 100%;
+  }
+
+  .collections .collection-list-count {
+    margin-left: 8px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+</style>
+
+<% const collections = get_collections(); %>
+<article>
+  <div class="kratos-hentry kratos-page-inner clearfix">
+    <header class="kratos-page-header">
+      <h1 class="kratos-page-title text-center" itemprop="name headline"><%- __('title.collection') %></h1>
+    </header>
+    <div class="kratos-page-content kr-collections">
+      <div style="margin-left: 2em;">
+        <h3 class="archive-page-counter">
+          <%- __('list_page_count_message.collections', collections.length) %>
+        </h3>
+        <div class="collections">
+          <% if (collections.length) { %>
+            <ul>
+              <% collections.forEach((c) => { %>
+                <li class="collection-list-item">
+                  <a class="collection-list-link" href="<%- url_for(c.path) %>"><%= c.name %></a><span class="collection-list-count"><%= c.posts.length %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

@@ -10,6 +10,16 @@
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> <%- __('post_meta.author') %> <span itemprop="name"><%- page.author || config.author %></span>
                 </li>
+                <% if (section_name(page)) { %>
+                    <li><%- section_badge(page) %></li>
+                <% } %>
+                <% const postCollections = post_collections(page); %>
+                <% if (postCollections.length) { %>
+                    <li>
+                        <i class="fa fa-bookmark"></i> <%- __('post_meta.collection_in') %>
+                        <% postCollections.forEach((c, i) => { %><%- i ? ', ' : '' %><a href="<%- url_for(c.path) %>"><%= c.name %></a><% }) %>
+                    </li>
+                <% } %>
                 <% if (theme.posts.word_count.enable) { %>
                     <li>
                         <i class="fa fa-edit"></i> 

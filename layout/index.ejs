@@ -1,6 +1,10 @@
-<!-- Breadcrumb for tag & category page -->
-<% if (page.tag || page.category) { %>
+<!-- Breadcrumb for tag & collection page -->
+<% if (page.tag || page.category || page.collection) { %>
     <%- partial('_partial/breadcrumb') %>
+<% } %>
+
+<% if (is_home() || page.collection) { %>
+    <%- section_filter() %>
 <% } %>
 
 <% page.posts.each(function(post) { %>

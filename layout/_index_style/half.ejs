@@ -1,4 +1,4 @@
-<article itemscope itemtype="https://schema.org/Article">
+<article itemscope itemtype="https://schema.org/Article" data-section="<%= section_name(post) %>">
     <div class="kratos-hentry kratos-page-inner clearfix index-post">
         <% if (post.cover) { %>
         <div class="kratos-entry-thumb">
@@ -25,17 +25,8 @@
                     <i class="fa fa-calendar"></i> <%- date(post.date, null) %>
                 </time>
                 </li>
-                <% if (post.categories.length) { %>
-                    <li>
-                        <i class="fa fa-folder"></i>
-                        <%- __('post_meta.category_in') %>
-                        <%- list_categories(
-                            post.categories, {
-                                show_count: false, 
-                                class: 'label', 
-                                style: 'none'
-                            }) %>
-                    </li>
+                <% if (section_name(post)) { %>
+                    <li><%- section_badge(post) %></li>
                 <% } %>
                 <% if (post.tags.length) { %>
                     <li>

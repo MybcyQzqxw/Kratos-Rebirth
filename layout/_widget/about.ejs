@@ -17,12 +17,12 @@
                 <%- site.posts.length %>
             </span>
         </a>
-        <a class="meta-item" href="<%- url_for('/categories/') %>">
+        <a class="meta-item" href="<%- url_for('/collections/') %>">
             <span class="title">
-                <%- __('title.category') %>
+                <%- __('title.collection') %>
             </span>
             <span class="count">
-                <%- site.categories.length %>
+                <%- get_collections().length %>
             </span>
         </a>
         <a class="meta-item" href="<%- url_for('/tags/') %>">

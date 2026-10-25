@@ -1,4 +1,4 @@
-<article class="kratos-hentry clearfix" itemscope itemtype="https://schema.org/Article">
+<article class="kratos-hentry clearfix" itemscope itemtype="https://schema.org/Article" data-section="<%= section_name(post) %>">
     <div class="kratos-entry-border clearfix">
         <% if (post.sticky || post.top) { %>
             <div class="pin-top wrapper">
@@ -26,12 +26,7 @@
             <% } %>
             <div class="kratos-entry-post-inner">
                 <header class="kratos-entry-header">
-                        <%- list_categories(post.categories, {
-                            show_count: false,
-                            class: 'label',
-                            style: 'none',
-                            separator: ' '
-                        }) %>
+                        <%- section_badge(post) %>
                     <h2 class="kratos-entry-title"><a href="<%- url_for(post.path) %>" itemprop="mainEntityOfPage"><span itemprop="name headline"><%- post.title %></span></a>
                 </header>
                 <div class="kratos-entry-content">

@@ -1,0 +1,14 @@
+<% const collections = get_collections(); %>
+<% if (collections.length) { %>
+  <aside id="krw-collections" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-bookmark"></i><%- __('title.collection') %></h4>
+    <ul class="category-list">
+      <% collections.forEach((c) => { %>
+        <li class="category-list-item">
+          <a class="category-list-link" href="<%- url_for(c.path) %>"><%= c.name %></a>
+          <span class="category-list-count"><%= c.posts.length %></span>
+        </li>
+      <% }) %>
+    </ul>
+  </aside>
+<% } %>
