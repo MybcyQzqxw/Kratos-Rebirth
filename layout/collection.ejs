@@ -1,1 +1,11 @@
+<% const info = page.collection_info; %>
+<% if (info) { %>
+    <div class="col-hero<%= info.cover ? '' : ' no-cover' %>"<% if (info.cover) { %> style="--cover: url('<%- url_for(info.cover) %>')"<% } %>>
+        <div class="col-card-body">
+            <h2 class="col-card-title"><%= info.name %></h2>
+            <% if (info.description) { %><p class="col-card-desc"><%= info.description %></p><% } %>
+            <span class="col-card-count"><i class="fa fa-file-text-o"></i> <%= info.count %> 篇文章</span>
+        </div>
+    </div>
+<% } %>
 <%- partial('index') %>
