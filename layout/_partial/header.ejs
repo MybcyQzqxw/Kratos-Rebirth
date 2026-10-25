@@ -50,29 +50,6 @@
                 </div>
             </header>
         </div>
-        <%
-            // 计算非首页横幅展示的板块名称（板块横幅内容）
-            let bannerTitle = '';
-            let bannerSubtitle = '';
-            if (is_archive()) {
-                bannerTitle = __('title.archive');
-                if (is_month()) {
-                    bannerTitle += ': ' + page.year + '-' + String(page.month).padStart(2, '0');
-                } else if (is_year()) {
-                    bannerTitle += ': ' + page.year;
-                }
-            } else if (is_category()) {
-                bannerTitle = __('title.category');
-                bannerSubtitle = page.category;
-            } else if (is_tag()) {
-                bannerTitle = __('title.tag');
-                bannerSubtitle = page.tag;
-            } else if (is_post()) {
-                bannerTitle = page.title || __('title.status');
-            } else {
-                bannerTitle = page.title || (page.title_i18n ? __(page.title_i18n) : '') || config.title;
-            }
-        %>
         <div id="kr-banner-zone">
             <% if (is_home()) { %>
                 <!-- 首页专属全屏封面：初次进入占满全屏，下拉后与主界面自然衔接；一旦完全滚入主界面即永久折叠，之后上拉也不会再出现 -->
@@ -87,20 +64,8 @@
                         <i class="fa fa-angle-down"></i>
                     </div>
                 </div>
-            <% } else if (!is_post() && !is_archive()) { %>
-                <!-- 文章页和归档页不显示横幅，仅由 #kr-banner-zone 的 padding 为固定导航栏留白 -->
-                <div class="kratos-start kratos-hero-2">
-                    <div class="kratos-cover kratos-cover-2 text-center">
-                        <div class="desc desc2 animate-box">
-                            <h2><%- bannerTitle %></h2>
-                            <% if (bannerSubtitle) { %>
-                                <br />
-                                <span><%- bannerSubtitle %></span>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
             <% } %>
+            <!-- 非首页不显示横幅，仅由 #kr-banner-zone 的 padding 为固定导航栏留白 -->
         </div>
 
         <div id="kratos-blog-post">
