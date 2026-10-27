@@ -14,9 +14,9 @@ title:
 read_full: 阅读全文
 comment: 评论
 list_page_count_message:
-  archive: 当前共有 %d 篇文章 (゜-゜)つロ 干杯~
-  tags: 当前共有 %d 个标签 (゜-゜)つロ 干杯~
-  categories: 当前共有 %d 种分类 (゜-゜)つロ 干杯~
+  archive: 当前共有 %d 篇文章
+  tags: 当前共有 %d 个标签
+  categories: 当前共有 %d 种分类
 page_no: 第 %d 页
 post_next: 上一篇
 post_prev: 下一篇
@@ -40,7 +40,7 @@ footer_components:
 search:
   submit: 找一找~
   notice:
-    welcome: 有什么想找找看的呢o(*￣▽￣*)ブ
+    welcome: 有什么想找找看的呢？
     page: 这里是 %s 的搜索引擎~
     keywords: 搜索多个关键词时请用空格分割，例如「%s」这样；
     tags: 您也可以使用这些标签碰碰运气哦~
