@@ -105,15 +105,9 @@
   <% } %>
   <%- open_graph({
     image: (function(){
-      const cover = page.cover;
+      const cover = is_post() ? post_cover(page, { stable: true }) : '';
       if (cover) {
-        if (/^(#|\/\/|http(s)?:)/.test(cover)) {
-          return cover;
-        }
-        const coverPath = cover.startsWith('/') ? 
-          cover : 
-          page.path.replace(/(\/index)?\.html?$/, '') + '/' + cover;
-        return full_url_for(coverPath);
+        return full_url_for(cover);
       }
       return theme.image.favicon ? full_url_for(theme.image.favicon) : null;
     })(),
@@ -133,7 +127,7 @@
         "@type": "BlogPosting",
         "headline": page.title,
         "description": jsonLdDescription,
-        "image": page.cover ? full_url_for(page.path + page.cover) : (theme.image.avatar ? full_url_for(theme.image.avatar) : ""),
+        "image": post_cover(page, { stable: true }) ? full_url_for(post_cover(page, { stable: true })) : (theme.image.avatar ? full_url_for(theme.image.avatar) : ""),
         "author": {
           "@type": "Person",
           "name": page.author || config.author

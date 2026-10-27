@@ -87,7 +87,13 @@ footer:
 
 # Post 文章配置
 posts:
-  default_cover: "/images/default.webp" # 没有头图的文章使用的默认图片
+  default_cover: "/images/default.webp" # 没有头图的文章使用的默认图片（default_covers 为空时的备用）
+  default_covers: # 没有头图的文章从这些图片中随机选取一张
+    - "/images/default.webp"
+    - "/images/covers/pink.webp"
+    - "/images/covers/green.webp"
+    - "/images/covers/amber.webp"
+    - "/images/covers/violet.webp"
   donate: true # 默认是否启用打赏功能
   share: true # 默认是否启用分享功能
   word_count: # 字数统计功能
