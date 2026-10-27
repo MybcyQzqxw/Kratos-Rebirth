@@ -789,11 +789,11 @@ table {
   }
 
   &-primary {
-    background-color: #cfe2ff;
+    background-color: #ead9f5;
 
     .icon,
     .text :not(code) {
-      color: #084298;
+      color: #5b2a7a;
     }
   }
 
@@ -816,11 +816,11 @@ table {
   }
 
   &-info {
-    background-color: #cff4fc;
+    background-color: #fbd9e8;
 
     .icon,
     .text :not(code) {
-      color: #055160;
+      color: #8a2b55;
     }
   }
 
@@ -861,7 +861,7 @@ table {
 
   $danger: #dc2626cc;
   $success: #65a30dcc;
-  $info: #0284c7cc;
+  $info: #e0558fcc;
   $warning: #d97706cc;
 
   &-danger {
@@ -2547,7 +2547,7 @@ body.scroll-down .kr-tool {
 }
 
 #footer {
-  background: #23282d;
+  background: #261f24;
   padding: 14px 0;
 
   &.ap-lrc {
