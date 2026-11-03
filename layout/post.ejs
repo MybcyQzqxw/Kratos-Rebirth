@@ -6,7 +6,7 @@
                 <h1 class="kratos-page-title text-center" itemprop="name headline"><%- page.title %></h1>
             <% } %>
             <ul class="kratos-page-meta text-center">
-                <li><time datetime="<%= date_xml(page.date) %>" itemprop="datePublished"><i class="fa fa-calendar"></i> <%- date(page.date, null) %></time></li>
+                <li><time datetime="<%= date_xml(page.date) %>" itemprop="datePublished"><a href="<%- url_for('/stats/') %>"><i class="fa fa-calendar"></i> <%- date(page.date, null) %></a></time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> <%- __('post_meta.author') %> <a href="<%- url_for('/') %>" itemprop="url"><span itemprop="name"><%- page.author || config.author %></span></a>
                 </li>
