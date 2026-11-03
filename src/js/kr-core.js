@@ -35,7 +35,9 @@ import "./kr-polyfill";
         // 不能因为折叠后补偿出来的滚动量恰好小于阈值而又被隐藏
         const cover = getFullpageCover();
         const pastCover =
-          !!cover && cover.classList.contains("kr-cover-collapsed");
+          !!cover &&
+          isCoverCollapsedByScroll &&
+          cover.classList.contains("kr-cover-collapsed");
         if (window.scrollY > 200 || pastCover) {
           if (!isScrolledDown) {
             document.body.classList.add("scroll-down");
@@ -64,18 +66,26 @@ import "./kr-polyfill";
   // 首页全屏封面：与下方主界面同处正常文档流（占位在其上方），
   // 下拉时随浏览器原生滚动自然过渡到主界面（视觉连贯）；
   // 一旦用户滚动越过封面完全进入主界面，就永久折叠封面所占的空间，
-  // 之后无论怎样上拉都不会再看到封面，如同首页从未有过封面一样
+  // 之后无论怎样上拉都不会再看到封面，如同首页从未有过封面一样。
+  // “已折叠”状态保存在内存中：pjax 切换（如首页翻页）不会重置，
+  // 只有整页刷新（浏览器刷新或右下角刷新按钮）才会让封面重新出现
   let isCoverCollapsed = false;
+  let isCoverCollapsedByScroll = false;
 
   const getFullpageCover = () => document.getElementById("kr-fullpage-cover");
 
-  // 每次进入首页（含 pjax 跳转）都重置折叠状态、强制回到顶部展示封面，并绑定下滑箭头
+  // 每次进入首页（含 pjax 跳转）都绑定下滑箭头；封面尚未被折叠过时强制回到顶部展示封面，
+  // 已折叠过则直接以折叠态渲染，不再显示封面
   const initFullpageCover = () => {
     const cover = getFullpageCover();
     if (!cover) {
       return;
     }
-    isCoverCollapsed = false;
+    isCoverCollapsedByScroll = false;
+    if (isCoverCollapsed) {
+      cover.classList.add("kr-cover-collapsed");
+      return;
+    }
     cover.classList.remove("kr-cover-collapsed");
     // 防止浏览器恢复刷新前的滚动位置导致封面被跳过，强制瞬间回到顶部
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -102,6 +112,7 @@ import "./kr-polyfill";
     }
     // 已完全进入主界面：折叠封面占位并原地补偿滚动位置，避免画面跳动
     isCoverCollapsed = true;
+    isCoverCollapsedByScroll = true;
     cover.classList.add("kr-cover-collapsed");
     // 折叠后封面仍保留导航栏高度的占位，补偿量需扣除这部分
     const overshoot = y - (coverHeight - cover.offsetHeight);
